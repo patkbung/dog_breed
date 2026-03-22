@@ -1,0 +1,70 @@
+'use client'
+import { useEffect, useState, useRef } from 'react'
+import * as tf from '@tensorflow/tfjs'
+
+export function useDogModel() {
+  const modelRef = useRef(null)
+  const [classNames, setClassNames] = useState([])
+  const [ready, setReady] = useState(false)
+  const [loadingProgress, setLoadingProgress] = useState(0)
+
+  useEffect(() => {
+    async function load() {
+      // โหลด class names
+      const res = await fetch('/tfjs_model/class_names.json')
+      const names = await res.json()
+      setClassNames(names)
+      setLoadingProgress(30)
+
+      // โหลดโมเดล
+      const model = await tf.loadLayersModel('/tfjs_model/model.json', {
+        onProgress: (fraction) => {
+          setLoadingProgress(30 + Math.round(fraction * 70))
+        },
+      })
+      modelRef.current = model
+
+      // warm up (รันครั้งแรกช้า ทำ warm up ก่อน)
+      const dummy = tf.zeros([1, 224, 224, 3])
+      model.predict(dummy).dispose()
+      dummy.dispose()
+
+      setReady(true)
+      setLoadingProgress(100)
+    }
+    load()
+  }, [])
+
+  const predict = async (imageElement) => {
+    if (!modelRef.current || !classNames.length) return null
+
+    return tf.tidy(() => {
+      const tensor = tf.browser
+        .fromPixels(imageElement)
+        .resizeBilinear([224, 224])
+        // ⚠️ ไม่ต้อง normalize เพราะ model มี Rescaling layer อยู่แล้ว
+        .toFloat()
+        .expandDims(0)
+
+      const predictions = modelRef.current.predict(tensor)
+      const values = predictions.dataSync()
+
+      const top3 = Array.from(values)
+        .map((confidence, i) => ({
+          breed: classNames[i].replace(/_/g, ' '),
+          raw: classNames[i],
+          confidence,
+        }))
+        .sort((a, b) => b.confidence - a.confidence)
+        .slice(0, 3)
+
+      return {
+        breed: top3[0].breed,
+        confidence: top3[0].confidence,
+        top3,
+      }
+    })
+  }
+
+  return { ready, predict, loadingProgress }
+}
