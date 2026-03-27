@@ -284,16 +284,6 @@ export default function Homepage() {
           />
         </a>
 
-        <nav className="hidden lg:flex items-center gap-8">
-          {navigation.map((item) => (
-            <a key={item.name} href={item.href}
-              className={`text-sm font-medium transition-colors ${item.active
-                ? 'text-[#f06292] border-b-2 border-[#f06292] pb-0.5'
-                : 'text-[#666] hover:text-[#1a1a1a]'}`}>
-              {item.name}
-            </a>
-          ))}
-        </nav>
 
         <button className="lg:hidden p-2 text-[#555]" onClick={() => setMobileMenuOpen(true)}>
           <Bars3Icon className="w-6 h-6" />
