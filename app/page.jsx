@@ -9,7 +9,7 @@ import Marquee from 'react-fast-marquee'
 
 
 const navigation = [
-  { name: 'Identify', href: '#', active: true },
+ // { name: 'Identify', href: '#', active: true },
   // { name: 'Breeds', href: '#' },
   // { name: 'About', href: '#' },
 
