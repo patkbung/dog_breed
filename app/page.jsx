@@ -7,14 +7,6 @@ import * as tf from '@tensorflow/tfjs'
 import Marquee from 'react-fast-marquee'
 
 
-
-const navigation = [
- // { name: 'Identify', href: '#', active: true },
-  // { name: 'Breeds', href: '#' },
-  // { name: 'About', href: '#' },
-
-]
-
 // ── Hook โหลดโมเดล ─────────────────────────────────────────────────────────
 function useDogModel() {
   const modelRef = useRef(null)
