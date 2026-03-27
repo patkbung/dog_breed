@@ -300,16 +300,7 @@ export default function Homepage() {
               <XMarkIcon className="w-6 h-6" />
             </button>
           </div>
-          <div className="flex flex-col gap-1">
-            {navigation.map((item) => (
-              <a key={item.name} href={item.href} onClick={() => setMobileMenuOpen(false)}
-                className={`px-4 py-3 rounded-xl text-base font-medium transition ${item.active
-                  ? 'bg-[#f06292]/10 text-[#f06292]'
-                  : 'text-[#1a1a1a] hover:bg-[#d8d8d1]'}`}>
-                {item.name}
-              </a>
-            ))}
-          </div>
+
         </DialogPanel>
       </Dialog>
 
